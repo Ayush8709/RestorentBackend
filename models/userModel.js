@@ -23,12 +23,12 @@ const userSchema = new mongoose.Schema({
         required:[true, 'phone number is required']
     },
 
-    usertype:{
-        type:String,
-        required:[true, 'user type is required'],
-        default:'clint',
-        enum:['client', 'admin','vendor', 'driver']
-    },
+    // usertype:{
+    //     type:String,
+    //     required:[true, 'user type is required'],
+    //     default:'clint',
+    //     enum:['client', 'admin','vendor', 'driver']
+    // },
     profile:{
         type:String,
         default:"https://unsplash.com/photos/a-man-wearing-glasses-and-a-black-shirt-iEEBWgY_6lA"

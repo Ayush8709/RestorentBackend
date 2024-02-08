@@ -1,4 +1,6 @@
 import User from "../models/userModel.js"
+import bcrypt from 'bcryptjs'
+import JWT from 'jsonwebtoken'
 
 //Register auth
 const registerController =async ( req, res) =>{
@@ -25,8 +27,18 @@ const registerController =async ( req, res) =>{
             })
         }
 
+        //password hassing with the help of becript js
+        var salt = bcrypt.genSaltSync(10);
+        const hashPassword = await bcrypt.hash(password, salt)
+
         // if user is not existe on databasse then create new Registration Form
-        const user = await User.create({userName,email, password, address, phone})
+        const user = await User.create({
+            userName,
+            email,
+            password:hashPassword,
+            address,
+            phone
+            })
         res.status(201).send({
             success: true,
             message:"SuccessFully Register ",
@@ -41,6 +53,7 @@ const registerController =async ( req, res) =>{
     }
 };
 
+//################################################################################################################
 //LOGIN 
 const loginController = async(req, res)=>{
     try {
@@ -55,18 +68,34 @@ const loginController = async(req, res)=>{
             })
         }
 
-        //Check User
-        const user = await User.findOne({email:email, password: password})
+        
+        //Check User 
+       
+        const user = await User.findOne({email})
         if(!user){
             return res.status(404).send({
                 success:false,
-                message:"User & Password Not Match"
+                message:"User Not Match"
             })
         }
+            //password match with compare  function
+        const isMatch = await bcrypt.compare(password, user.password)
+        if(!isMatch){
+            return res.status(500).send({
+                success:false,
+                message:"Invalid Credentials"
+            })
+        }
+
+        //jwt token create
+        const token = JWT.sign({id: user._id},  process.env.JWT_SECRET , {
+            expiresIn:"7d",
+        })
         res.status(200).send({
             success:true,
             message:"Login SuccesFully",
-            user
+            token,
+            user,
            
         })
     } catch (error) {

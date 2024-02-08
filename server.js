@@ -14,6 +14,7 @@ connactDb()
 //file imports 
 import testRoute  from './routes/testRoutes.js'
 import register from './routes/authRoutes.js'
+import user from './routes/userRoutes.js'
 
 //middleware 
 // app.use(morgan('dev'))
@@ -23,6 +24,7 @@ app.use(cors())
 // Routes 
 app.use('/api/v1/test', testRoute)
 app.use('/api/v1/auth',register)
+app.use('/api/v1/user',user)
 
 app.get('/',(req, res)=>{
     res.status(200).send("hello server")
